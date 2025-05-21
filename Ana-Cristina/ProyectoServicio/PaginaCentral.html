@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Servicio</title>
+</head>  
+
+<style>
+
+    body{
+      background-color: #2e4daa;
+            color: rgb(0, 0, 0); 
+            font-family: Arial, sans-serif; 
+            margin: -9;
+            height: 100;
+    }
+    .btn {
+      padding: 10px 3px;
+      margin: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-Proyecto {
+      background-color: #28a745;
+      color: white;
+    }
+    .btn-subirProyecto {
+      background-color: #28a745;
+      color: white;
+    }
+    .btn-Papelera {
+      background-color: #28a745;
+      color: white;
+    }
+    
+    .btn:hover {
+      opacity: 0.8;
+    }
+
+    .icon-container {
+      position:flex;
+      top: -5px;
+      left: 20px;
+      border-radius: 0%;
+      padding: 5px;
+      box-shadow: 0  0px 10px rgba(162, 15, 15, 0);
+    }
+    .icon-container img {
+      width: 30px;
+      height: 30px;
+      background-color: rgb(48, 48, 224);;
+    }
+    
+    .contenedor {
+            color: rgb(3, 3, 248); 
+            padding: 20px; 
+            border-radius: 0px; 
+            width: 100%; 
+            margin: 20px ;
+        }
+         
+
+    .color{
+      background-color: #3848d6;
+    }
+  </style>
+  
+
+<body>
+<div class="color"><div class="icon-container" >
+  <img src="https://images.crunchbase.com/image/upload/c_pad,h_256,w_256,f_auto,q_auto:eco,dpr_1/ep9ev4a2ncbmknkv2t7f"  width="20%" height="20%">  </div>
+  <pre>   Practicas profesionales Unison</pre></div>
+    </div>
+  
+  <div class="btn btn-container">
+  </div>
+
+  <div class="contenedor">  
+    <center>
+    <button class="btn btn-Proyecto", onclick="window.location.href='http://localhost/app_ci4/public/'"> <i class="fas fa-proyecto-circle"></i> Tus proyectos</button>
+    <button class="btn btn-subirProyecto", onclick="window.location.href='http://localhost/app_ci4/public/SubirProyecto.html'"> <i class="fas fa-check-circle"></i> Subir proyecto</button>
+    <button class="btn btn-Papelera", onclick="window.location.href='http://localhost/app_ci4/public/Papelera.html'"> <i class="fas fa-exclamation-circle"></i> Papelera</button> 
+    </center>
+  </div>
+
+
+</body>
+</html>
