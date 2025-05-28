@@ -1,0 +1,60 @@
+CREATE TABLE alumnos (
+	ID INT PRIMARY KEY IDENTITY(1,1),
+	nombre VARCHAR(50),
+	carrera VARCHAR(50),
+	correo VARCHAR(50),
+	password VARCHAR(50)
+);
+
+CREATE TABLE maestros (
+	ID INT PRIMARY KEY IDENTITY(1,1),
+	nombre VARCHAR(50),
+	departamento VARCHAR(50),
+	correo VARCHAR(50),
+	password VARCHAR(50)
+);
+
+CREATE TABLE coordinador (
+	ID INT PRIMARY KEY IDENTITY(1,1),
+	nombre VARCHAR(50),
+	departamento VARCHAR(50),
+	correo VARCHAR(50),
+	password VARCHAR(50)
+);
+
+CREATE TABLE moderador (
+	ID INT PRIMARY KEY IDENTITY(1,1),
+	nombre VARCHAR(50),
+	departamento VARCHAR(50),
+	correo VARCHAR(50),
+	password VARCHAR(50)
+);
+
+CREATE TABLE tabla1 (
+	ID INT PRIMARY KEY IDENTITY(1,1),
+	nombre VARCHAR(50),
+	propiedad VARCHAR(50)
+);
+
+CREATE TABLE tabla2 (
+	ID INT PRIMARY KEY IDENTITY(1,1),
+	nombre VARCHAR(50),
+	propiedad VARCHAR(50)
+);
+
+CREATE TABLE tabla3 (
+	ID INT PRIMARY KEY IDENTITY(1,1),
+	nombre VARCHAR(50),
+	propiedad VARCHAR(50)
+);
+
+CREATE TABLE Practicas (
+    ID INT PRIMARY KEY IDENTITY(1,1),
+    Titulo VARCHAR(100),
+    Carrera VARCHAR(50),
+    Estatus VARCHAR(50),
+    Integrantes INT,
+    Fase INT,
+    Fecha DATETIME2(0) NULL,
+    Imagen VARCHAR(255)
+);
