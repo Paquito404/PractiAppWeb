@@ -2,7 +2,7 @@
 <p>Este apartado se enfoca en registrar maestros</p>
 <br></br>
 
-<form action="<?php echo base_url('registroM')?>" method="post" autocomplete="off" enctype="multipart/form-data">
+<form action="<?php echo base_url('registroC')?>" method="post" autocomplete="off" enctype="multipart/form-data">
 
     <h2>Nombre</h2>
     <input type="text" name="nombre" id="nombre" required>

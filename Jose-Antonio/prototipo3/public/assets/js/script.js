@@ -21,6 +21,8 @@ function loadContent(pagina) {
     loadContent('inicio');
   };
   
+// ---------------------------------- buscar.php ------------------------------ //
+
   function verFila(tabla, id) {
     const contentDiv = document.getElementById('content');
 
@@ -40,26 +42,97 @@ function loadContent(pagina) {
         });
 }
 
-  function loadPractica(id) {
-      const contentDiv = document.getElementById('content');
-    
-      fetch(`${baseUrl}/vista/${id}`)
-          .then(response => {
-              if (!response.ok) {
-                  throw new Error('Error al cargar la práctica');
-              }
-              return response.text();
-          })
-          .then(data => {
-              contentDiv.innerHTML = data;
-          })
-          .catch(error => {
-              contentDiv.innerHTML = '<p>Error al cargar la práctica.</p>';
-              console.error('Error:', error);
-          });
-  }
+function filtrarFilas() {
+    const input = document.getElementById("buscador");
+    const filter = input.value.toLowerCase();
+    const botones = document.querySelectorAll(".boton-buscador");
 
-  function revisar(id) {
+    botones.forEach(btn => {
+        const nombre = btn.innerText.toLowerCase();
+        btn.style.display = nombre.includes(filter) ? "" : "none";
+    });
+}
+
+// -------------------------------------------------------------------------- //
+
+// -------------------------- usuario.php ------------------------------ //
+
+function mostrarModerador(){
+    if (!idUsuario) {
+        document.getElementById('infoUsuario').innerHTML = `<p>Error: ID de usuario no disponible.</p>`;
+        document.getElementById('usuarioPanel').style.display = 'block';
+        return;
+    }
+
+    fetch(`${baseUrl}obtenerMo/${idUsuario}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                document.getElementById('infoUsuario').innerHTML = `<p>${data.error}</p>`;
+            } else {
+                const imgPath = `${baseUrl}moderadores/${data.ID}-${data.correo}.jpg`;
+                document.getElementById('infoUsuario').innerHTML = `
+                    <img src="${imgPath}" alt="Foto de perfil" width="100"><br>
+                    <strong>Nombre:</strong> ${data.nombre}<br>
+                    <strong>Departamento:</strong> ${data.departamento}<br>
+                    <strong>Correo:</strong> ${data.correo}<br>
+                `;
+            }
+            document.getElementById('usuarioPanel').style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Error al obtener los datos del maestro:', error);
+            document.getElementById('infoUsuario').innerHTML = `<p>Error al cargar la información.</p>`;
+            document.getElementById('usuarioPanel').style.display = 'block';
+        });
+}
+
+function mostrarCoordinador() {
+    if (!idUsuario) {
+        document.getElementById('infoUsuario').innerHTML = `<p>Error: ID de usuario no disponible.</p>`;
+        document.getElementById('usuarioPanel').style.display = 'block';
+        return;
+    }
+
+    fetch(`${baseUrl}obtenerC/${idUsuario}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                document.getElementById('infoUsuario').innerHTML = `<p>${data.error}</p>`;
+            } else {
+                const imgPath = `${baseUrl}coordinadores/${data.ID}-${data.correo}.jpg`;
+                document.getElementById('infoUsuario').innerHTML = `
+                    <img src="${imgPath}" alt="Foto de perfil" width="100"><br>
+                    <strong>Nombre:</strong> ${data.nombre}<br>
+                    <strong>Departamento:</strong> ${data.departamento}<br>
+                    <strong>Correo:</strong> ${data.correo}<br>
+                `;
+            }
+            document.getElementById('usuarioPanel').style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Error al obtener los datos del maestro:', error);
+            document.getElementById('infoUsuario').innerHTML = `<p>Error al cargar la información.</p>`;
+            document.getElementById('usuarioPanel').style.display = 'block';
+        });
+}
+
+function cerrarPanel() {
+    document.getElementById('usuarioPanel').style.display = 'none';
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const btnUsuario = document.getElementById('btnUsuario');
+    if (btnUsuario) {
+        btnUsuario.addEventListener('click', mostrarUsuario);
+    }
+});
+
+// -------------------------------------------------------------------------- //
+
+// --------------------------- revisar.php ---------------------------------- //
+
+function revisar(id) {
       const contentDiv = document.getElementById('content');
     
       fetch(`${baseUrl}/revision/${id}`)
@@ -98,6 +171,73 @@ function fase(id) {
         alert('Error al actualizar la práctica');
     });
 }
+
+// ------------------------------------------------------------------------ //
+
+// --------------------------- papelera.php ------------------------------- //
+
+function papelera(id) {
+    fetch(`${baseUrl}/papelera/${id}`, {
+        method: 'POST'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error al actualizar la práctica');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            loadContent('inicio');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al actualizar la práctica');
+    });
+}
+
+function borrar(id) {
+      const contentDiv = document.getElementById('content');
+    
+      fetch(`${baseUrl}/borracion/${id}`)
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error('Error al cargar la práctica');
+              }
+              return response.text();
+          })
+          .then(data => {
+              contentDiv.innerHTML = data;
+          })
+          .catch(error => {
+              contentDiv.innerHTML = '<p>Error al cargar la práctica.</p>';
+              console.error('Error:', error);
+          });
+  }
+
+// ------------------------------------------------------------------------ //
+
+// --------------------------- CRUD PRACTICAS ----------------------------- //
+
+  function loadPractica(id) {
+      const contentDiv = document.getElementById('content');
+    
+      fetch(`${baseUrl}/vista/${id}`)
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error('Error al cargar la práctica');
+              }
+              return response.text();
+          })
+          .then(data => {
+              contentDiv.innerHTML = data;
+          })
+          .catch(error => {
+              contentDiv.innerHTML = '<p>Error al cargar la práctica.</p>';
+              console.error('Error:', error);
+          });
+  }
   
   function editarPractica(id) {
       const contentDiv = document.getElementById('content');
@@ -167,57 +307,4 @@ function fase(id) {
           });
       }
   }
-
-  function filtrarFilas() {
-    const input = document.getElementById("buscador");
-    const filter = input.value.toLowerCase();
-    const botones = document.querySelectorAll(".boton-buscador");
-
-    botones.forEach(btn => {
-        const nombre = btn.innerText.toLowerCase();
-        btn.style.display = nombre.includes(filter) ? "" : "none";
-    });
-}
-
-
-
-function mostrarUsuario() {
-    if (!idUsuario) {
-        document.getElementById('infoUsuario').innerHTML = `<p>Error: ID de usuario no disponible.</p>`;
-        document.getElementById('usuarioPanel').style.display = 'block';
-        return;
-    }
-
-    fetch(`${baseUrl}obtenerM/${idUsuario}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                document.getElementById('infoUsuario').innerHTML = `<p>${data.error}</p>`;
-            } else {
-                const imgPath = `${baseUrl}maestros/${data.ID}-${data.departamento}.jpg`;
-                document.getElementById('infoUsuario').innerHTML = `
-                    <img src="${imgPath}" alt="Foto de perfil" width="100"><br>
-                    <strong>Nombre:</strong> ${data.nombre}<br>
-                    <strong>Departamento:</strong> ${data.departamento}<br>
-                    <strong>Correo:</strong> ${data.correo}<br>
-                `;
-            }
-            document.getElementById('usuarioPanel').style.display = 'block';
-        })
-        .catch(error => {
-            console.error('Error al obtener los datos del maestro:', error);
-            document.getElementById('infoUsuario').innerHTML = `<p>Error al cargar la información.</p>`;
-            document.getElementById('usuarioPanel').style.display = 'block';
-        });
-}
-
-function cerrarPanel() {
-    document.getElementById('usuarioPanel').style.display = 'none';
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-    const btnUsuario = document.getElementById('btnUsuario');
-    if (btnUsuario) {
-        btnUsuario.addEventListener('click', mostrarUsuario);
-    }
-});
+// --------------------------------------------------------------------- //

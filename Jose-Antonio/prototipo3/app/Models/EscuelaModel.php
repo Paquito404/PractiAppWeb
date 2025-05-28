@@ -12,8 +12,8 @@ class EscuelaModel extends Model
     protected $returnType     = 'array';
     protected $useSoftDeletes = false;
 
-    protected $allowedFields = ['Titulo', 'Carrera', 'Estatus', 'Integrantes', 'Fase'];
+    protected $allowedFields = ['Titulo', 'Carrera', 'Estatus', 'Integrantes', 'Fase', 'Fecha', 'Imagen'];
 
-    protected bool $allowEmptyInserts = false;
+    protected bool $allowEmptyInserts = true;
     protected bool $updateOnlyChanged = true;
 }

@@ -2,9 +2,13 @@
 
 namespace App\Controllers;
 
+use CodeIgniter\I18n\Time;
+
 use App\Models\EscuelaModel;
 use App\Models\AlumnoModel;
 use App\Models\MaestroModel;
+use App\Models\CoordinadorModel;
+use App\Models\ModeradorModel;
 use App\Models\Tabla1Model;
 use App\Models\Tabla2Model;
 use App\Models\Tabla3Model;
@@ -24,12 +28,16 @@ class Home extends BaseController
 
         $alumnoModel = new AlumnoModel();
         $maestroModel = new MaestroModel();
+        $coordinadorModel = new CoordinadorModel();
+        $moderadorModel = new ModeradorModel();
 
         $correo = $this->request->getPost('correo');
         $contraseña = $this->request->getPost('password');
 
         $alumno = $alumnoModel->where('correo', $correo)->first();
         $maestro = $maestroModel->where('correo', $correo)->first();
+        $coordinador = $coordinadorModel->where('correo', $correo)->first();
+        $moderador = $moderadorModel->where('correo', $correo)->first();
 
         if ($alumno && $alumno['password'] === $contraseña) {
             session()->set([
@@ -49,6 +57,26 @@ class Home extends BaseController
                 'logged_in' => true
             ], $maestro['ID']);
             return redirect()->to('/maestro');
+        }
+
+        if ($coordinador && $coordinador['password'] === $contraseña) {
+            session()->set([
+                'usuario_id' => $coordinador['ID'],
+                'nombre' => $coordinador['nombre'],
+                'tipo' => 'coordinador',
+                'logged_in' => true
+            ], $coordinador['ID']);
+            return redirect()->to('/coordinador');
+        }
+
+        if ($moderador && $moderador['password'] === $contraseña) {
+            session()->set([
+                'usuario_id' => $moderador['ID'],
+                'nombre' => $moderador['nombre'],
+                'tipo' => 'coordinador',
+                'logged_in' => true
+            ], $moderador['ID']);
+            return redirect()->to('/moderador');
         }
 
         return redirect()->to('/')->with('error', 'Correo o contraseña incorrectos');
@@ -81,6 +109,32 @@ class Home extends BaseController
 
     }
 
+    public function coordinador(){
+
+        if (!session()->get('logged_in')) {
+            return redirect()->to('/');
+        }
+
+        return view('Coordinador', [
+            'nombre' => session()->get('nombre'),
+            'tipo' => session()->get('tipo')
+        ]);
+
+    }
+
+    public function moderador(){
+
+        if (!session()->get('logged_in')) {
+            return redirect()->to('/');
+        }
+
+        return view('Moderador', [
+            'nombre' => session()->get('nombre'),
+            'tipo' => session()->get('tipo')
+        ]);
+
+    }
+
     public function logout()
     {
         session()->destroy();
@@ -102,7 +156,7 @@ class Home extends BaseController
     $escuelaModel = new EscuelaModel();
     $practica = $escuelaModel->findAll();
 
-    $allowedPages = ['inicio', 'formulario', 'default', 'lista', 'editar', 'buscar', 'registro', 'revisar'];
+    $allowedPages = ['inicio', 'formulario', 'default', 'lista', 'editar', 'buscar', 'registro', 'revisar', 'papelera'];
 
     if (!in_array($pagina, $allowedPages)) {
         return $this->response->setStatusCode(404)->setBody('Página no encontrada');
@@ -142,6 +196,23 @@ class Home extends BaseController
 
     }
 
+    public function borracion($id = null){
+
+        if ($id === null) {
+            return $this->response->setStatusCode(400)->setBody('Practica no proporcionado');
+        }
+
+        $escuelaModel = new EscuelaModel();
+        $practica = $escuelaModel->find($id);
+
+        if (!$practica) {
+            return $this->response->setStatusCode(404)->setBody('Práctica no encontrada');
+        }
+
+        return view('contenido/borracion', ['practica' => $practica]);
+
+    }
+
     public function verFila($tabla, $id){
 
         $model = match($tabla) {
@@ -162,6 +233,34 @@ class Home extends BaseController
     }
 
     return view('contenido/busqueda', ['fila' => $fila, 'origen' => $tabla]);
+
+    }
+
+    public function fase($id = null){
+
+        $escuelaModel = new EscuelaModel();
+
+        $escuelaModel->update($id, [
+            'Fase' => 2,
+            'Fecha' => NULL
+        ]);
+
+        return $this->response->setJSON(['success' => true]);
+
+    }
+
+    public function papelera($id = null){
+
+        $escuelaModel = new EscuelaModel();
+
+        $tiempo = Time::now()->addSeconds(30)->toDateTimeString();
+        
+        $escuelaModel->update($id, [
+            'Fase' => 0,
+            'Fecha' => $tiempo
+        ]);
+
+        return $this->response->setJSON(['success' => true]);
 
     }
 
@@ -198,15 +297,19 @@ class Home extends BaseController
         'Carrera' => $post['Carrera'],
         'Estatus' => $post['Estatus'],
         'Integrantes' => $post['Integrantes'],
-        'Fase' => 1 
-    ], true); 
+        'Fase' => 1
+    ], true);
+
+    $escuelaModel->update($id, [
+        'Imagen' => $id . '-' . $post['Carrera'] .'.jpg'
+    ]);
 
     $imagen = $this->request->getFile('imagen');
     if ($imagen && $imagen->isValid()) {
         $imagen->move(ROOTPATH . 'public/imagenes', $id . '-' . $post['Carrera'] .'.jpg', true);
     }
 
-    return redirect()->to('/maestro');
+    return redirect()->to('/coordinador');
     }
 
     public function editar($id = null){
@@ -227,30 +330,32 @@ class Home extends BaseController
     }
 
     public function actualizar($id = null){
-
+    
     $post = $this->request->getPost(['Titulo','Carrera','Estatus','Integrantes']);
     $escuelaModel = new EscuelaModel();
+
+    $Imagen = $escuelaModel->find($id);
+    $nombreOriginal = $Imagen['Imagen'];
     
     $escuelaModel->update($id, $post);
 
+    $nombre = $id . '-' . $post['Carrera'] . '.jpg';
+
+    $escuelaModel->update($id, [
+        'Imagen' => $nombre
+    ]);
+
+    $OldPath = FCPATH . 'imagenes/' . $nombreOriginal;
+    $NewPath = FCPATH . 'imagenes/' . $nombre;
+
+    rename($OldPath, $NewPath);
+
     $imagen = $this->request->getFile('imagen');
     if ($imagen && $imagen->isValid()) {
-        $imagen->move(ROOTPATH . 'public/imagenes', $id . '-' . $post['Carrera'] .'.jpg', true);
+        $imagen->move(ROOTPATH . 'public/imagenes', $nombre, true);
     }
 
     return $this->response->setJSON(['success' => true]);
-
-    }
-
-    public function fase($id = null){
-
-        $escuelaModel = new EscuelaModel();
-
-        $escuelaModel->update($id, [
-            'Fase' => 2
-        ]);
-
-        return $this->response->setJSON(['success' => true]);
 
     }
 
@@ -267,6 +372,7 @@ class Home extends BaseController
         return $this->response->setStatusCode(404)->setBody('Práctica no encontrada');
     }
 
+
     $escuelaModel->delete($id);
 
     $imagenPath = ROOTPATH . 'public/imagenes/' . $id . '-' . $practica['Carrera'] . '.jpg';
@@ -282,15 +388,15 @@ class Home extends BaseController
 
 //////////////////////////////////////////////////////////////////////
 
-    //--------------------- CRUD Maestros ------------------//
+    //--------------------- CRUD Coordinadores ------------------//
 
-    public function guardarM(){
+    public function guardarC(){
 
-        $MaestroModel = new MaestroModel();
+        $CoordinadorModel = new CoordinadorModel();
         $post = $this->request->getPost(['nombre', 'departamento', 'correo', 'password']);
         
 
-        $registro = $MaestroModel->insert([
+        $registro = $CoordinadorModel->insert([
             'nombre' => $post['nombre'],
             'departamento' => $post['departamento'],
             'correo' => $post['correo'],
@@ -299,25 +405,64 @@ class Home extends BaseController
         
         $imagen = $this->request->getFile('imagen');
         if ($imagen && $imagen->isValid()) {
-            $imagen->move(ROOTPATH . 'public/maestros', $registro . '-' . $post['departamento'] .'.jpg', true);
+            $imagen->move(ROOTPATH . 'public/coordinadores', $registro . '-' . $post['correo'] .'.jpg', true);
         }
 
-        return redirect()->to('/maestro');
+        return redirect()->to('/coordinador');
 
     }
 
-    public function ObtenerM($id){
+    public function ObtenerC($id){
 
-        $MaestroModel = new MaestroModel();
-        $maestro = $MaestroModel->find($id);
+        $CoordinadorModel = new CoordinadorModel();
+        $coordinador = $CoordinadorModel->find($id);
 
-        if (!$maestro) {
-            return $this->response->setJSON(['error' => 'Maestro no encontrado'])->setStatusCode(404);
+        if (!$coordinador) {
+            return $this->response->setJSON(['error' => 'Coordinador no encontrado'])->setStatusCode(404);
         }
 
-        return $this->response->setJSON($maestro);
+        return $this->response->setJSON($coordinador);
 
     }
 
     //------------------------------------------------------//
+
+    //--------------------- CRUD moderadores ------------------//
+
+    public function guardarMo(){
+
+        $ModeradorModel = new ModeradorModel();
+        $post = $this->request->getPost(['nombre', 'departamento', 'correo', 'password']);
+        
+
+        $registro = $ModeradorModel->insert([
+            'nombre' => $post['nombre'],
+            'departamento' => $post['departamento'],
+            'correo' => $post['correo'],
+            'password' => $post['password']
+        ], true);
+        
+        $imagen = $this->request->getFile('imagen');
+        if ($imagen && $imagen->isValid()) {
+            $imagen->move(ROOTPATH . 'public/moderadores', $registro . '-' . $post['correo'] .'.jpg', true);
+        }
+
+        return redirect()->to('/moderador');
+
+    }
+
+    public function ObtenerMo($id){
+
+        $ModeradorModel = new ModeradorModel();
+        $moderador = $ModeradorModel->find($id);
+
+        if (!$moderador) {
+            return $this->response->setJSON(['error' => 'Coordinador no encontrado'])->setStatusCode(404);
+        }
+
+        return $this->response->setJSON($moderador);
+
+    }
+
+    //---------------------------------------------------------//
 }

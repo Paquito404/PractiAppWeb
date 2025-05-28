@@ -41,6 +41,6 @@
 <?php endif; ?>
 
 <div class="botones-tabla">
-    <button onclick="editarPractica(<?= $practica['ID'] ?>)">Editar</button>
-    <button onclick="papelera(<?= $practica['ID'] ?>)">Eliminar</button>
+    <button onclick="fase(<?= $practica['ID'] ?>)">Restaurar</button>
+    <button onclick="eliminarPractica(<?= $practica['ID'] ?>)">Eliminar definitivamente</button>
 </div>

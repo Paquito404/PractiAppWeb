@@ -2,7 +2,7 @@
 <p>Aqui se editará la practica especificada</p>
 <br>
 
-<form id="formEditar" onsubmit="actualizarPractica(event, <?= $practica['ID'] ?>)" autocomplete="off" enctype="multipart/form-data">
+<form method="POST" id="formEditar" onsubmit="actualizarPractica(event, <?= $practica['ID'] ?>)" autocomplete="off" enctype="multipart/form-data">
     <h2>Titulo</h2>
     <input type="text" name="Titulo" id="Titulo" value="<?= $practica['Titulo'] ?>" required>
     <br>
@@ -30,4 +30,6 @@
     <br>
     <input type="submit" value="Actualizar">
     <br>
+
 </form>
+

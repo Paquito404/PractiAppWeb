@@ -29,7 +29,7 @@ class Database extends Config
             'DBPrefix'   => '',
             'pConnect'   => false,
             'DBDebug'    => true,
-            'charset'    => 'UTF-16',
+            'charset'    => 'UTF-8',
             'swapPre'    => '',
             'encrypt'    => false,
             'failover'   => [],

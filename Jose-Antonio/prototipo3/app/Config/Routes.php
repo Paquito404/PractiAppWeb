@@ -6,7 +6,7 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
-// ------------------------- Login ------------------------- //
+// ------------------------ Login ------------------------- //
 
 $routes->get('/', 'Home::index');
 $routes->post('login', 'Home::login');
@@ -14,12 +14,19 @@ $routes->get('logout', 'Home::logout');
 
 // -------------------------------------------------------- //
 
-//-------------------------- Contenido ------------------------ //
+//------------------------ Contenido ---------------------- //
 
 $routes->get('alumno', 'Home::alumno');
 $routes->get('maestro', 'Home::maestro');
+$routes->get('moderador', 'Home::moderador');
+$routes->get('coordinador', 'Home::coordinador');
 $routes->get('carga/(:any)', 'Home::carga/$1');
+
 $routes->get('/verFila/(:any)', 'Home::verFila/$1');
+
+$routes->get('/borracion/(:num)', 'Home::borracion/$1');
+$routes->post('/papelera/(:num)', 'Home::papelera/$1');
+
 $routes->get('/revision/(:num)', 'Home::revision/$1');
 $routes->post('/fase/(:num)', 'Home::fase/$1');
 
@@ -35,9 +42,16 @@ $routes->delete('/eliminar/(:num)', 'Home::eliminar/$1');
 
 // -------------------------------------------------------- //
 
-// -------------------- CRUD Maestros --------------------- //
+// ------------------ CRUD Coordinador -------------------- //
 
-$routes->post('registroM', 'Home::guardarM');
-$routes->get('/obtenerM/(:num)', 'Home::ObtenerM/$1');
+$routes->post('registroC', 'Home::guardarC');
+$routes->get('/obtenerC/(:num)', 'Home::ObtenerC/$1');
+
+// -------------------------------------------------------- //
+
+// -------------------- CRUD Moderador -------------------- //
+
+$routes->post('registroMo', 'Home::guardarMo');
+$routes->get('/obtenerMo/(:num)', 'Home::ObtenerMo/$1');
 
 // -------------------------------------------------------- //
