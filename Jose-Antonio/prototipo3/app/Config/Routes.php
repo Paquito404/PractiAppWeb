@@ -42,16 +42,16 @@ $routes->delete('/eliminar/(:num)', 'Home::eliminar/$1');
 
 // -------------------------------------------------------- //
 
-// ------------------ CRUD Coordinador -------------------- //
+// ---------------------- Registros ----------------------- //
 
-$routes->post('registroC', 'Home::guardarC');
-$routes->get('/obtenerC/(:num)', 'Home::ObtenerC/$1');
+$routes->post('registroM', 'Home::guardarM'); // Maestros
+$routes->post('registroC', 'Home::guardarC'); // Coordinadores
 
 // -------------------------------------------------------- //
 
-// -------------------- CRUD Moderador -------------------- //
+// -------------------- Obtencion -------------------- //
 
-$routes->post('registroMo', 'Home::guardarMo');
-$routes->get('/obtenerMo/(:num)', 'Home::ObtenerMo/$1');
+$routes->get('/obtenerC/(:num)', 'Home::ObtenerC/$1'); //Coordinador
+$routes->get('/obtenerMo/(:num)', 'Home::ObtenerMo/$1'); //Moderador
 
 // -------------------------------------------------------- //

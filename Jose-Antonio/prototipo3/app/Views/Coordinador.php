@@ -22,7 +22,7 @@
             <li><button onclick="loadContent('papelera')">Papelera</button></li>
             <li><button onclick="loadContent('revisar')">En revision</button></li>
             <li><button onclick="loadContent('buscar')">Base de datos</button></li>
-            <li><button onclick="loadContent('registro')">Registrar maestro</button></li>
+            <li><button onclick="loadContent('registroM')">Registrar maestro</button></li>
             <li class="alinear-derecha"><button id="btnUsuario" onclick="mostrarCoordinador()">Usuario</button></li>
         </ul>
     </nav>

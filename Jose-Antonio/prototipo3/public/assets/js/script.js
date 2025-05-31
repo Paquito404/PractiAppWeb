@@ -57,37 +57,7 @@ function filtrarFilas() {
 
 // -------------------------- usuario.php ------------------------------ //
 
-function mostrarModerador(){
-    if (!idUsuario) {
-        document.getElementById('infoUsuario').innerHTML = `<p>Error: ID de usuario no disponible.</p>`;
-        document.getElementById('usuarioPanel').style.display = 'block';
-        return;
-    }
-
-    fetch(`${baseUrl}obtenerMo/${idUsuario}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                document.getElementById('infoUsuario').innerHTML = `<p>${data.error}</p>`;
-            } else {
-                const imgPath = `${baseUrl}moderadores/${data.ID}-${data.correo}.jpg`;
-                document.getElementById('infoUsuario').innerHTML = `
-                    <img src="${imgPath}" alt="Foto de perfil" width="100"><br>
-                    <strong>Nombre:</strong> ${data.nombre}<br>
-                    <strong>Departamento:</strong> ${data.departamento}<br>
-                    <strong>Correo:</strong> ${data.correo}<br>
-                `;
-            }
-            document.getElementById('usuarioPanel').style.display = 'block';
-        })
-        .catch(error => {
-            console.error('Error al obtener los datos del maestro:', error);
-            document.getElementById('infoUsuario').innerHTML = `<p>Error al cargar la información.</p>`;
-            document.getElementById('usuarioPanel').style.display = 'block';
-        });
-}
-
-function mostrarCoordinador() {
+function mostrarCoordinador(){
     if (!idUsuario) {
         document.getElementById('infoUsuario').innerHTML = `<p>Error: ID de usuario no disponible.</p>`;
         document.getElementById('usuarioPanel').style.display = 'block';
@@ -111,7 +81,37 @@ function mostrarCoordinador() {
             document.getElementById('usuarioPanel').style.display = 'block';
         })
         .catch(error => {
-            console.error('Error al obtener los datos del maestro:', error);
+            console.error('Error al obtener los datos del coordinador:', error);
+            document.getElementById('infoUsuario').innerHTML = `<p>Error al cargar la información.</p>`;
+            document.getElementById('usuarioPanel').style.display = 'block';
+        });
+}
+
+function mostrarModerador() {
+    if (!idUsuario) {
+        document.getElementById('infoUsuario').innerHTML = `<p>Error: ID de usuario no disponible.</p>`;
+        document.getElementById('usuarioPanel').style.display = 'block';
+        return;
+    }
+
+    fetch(`${baseUrl}obtenerMo/${idUsuario}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                document.getElementById('infoUsuario').innerHTML = `<p>${data.error}</p>`;
+            } else {
+                const imgPath = `${baseUrl}moderadores/${data.ID}-${data.correo}.jpg`;
+                document.getElementById('infoUsuario').innerHTML = `
+                    <img src="${imgPath}" alt="Foto de perfil" width="100"><br>
+                    <strong>Nombre:</strong> ${data.nombre}<br>
+                    <strong>Departamento:</strong> ${data.departamento}<br>
+                    <strong>Correo:</strong> ${data.correo}<br>
+                `;
+            }
+            document.getElementById('usuarioPanel').style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Error al obtener los datos del moderador:', error);
             document.getElementById('infoUsuario').innerHTML = `<p>Error al cargar la información.</p>`;
             document.getElementById('usuarioPanel').style.display = 'block';
         });
@@ -121,12 +121,12 @@ function cerrarPanel() {
     document.getElementById('usuarioPanel').style.display = 'none';
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+/*document.addEventListener('DOMContentLoaded', function () {
     const btnUsuario = document.getElementById('btnUsuario');
     if (btnUsuario) {
         btnUsuario.addEventListener('click', mostrarUsuario);
     }
-});
+});*/
 
 // -------------------------------------------------------------------------- //
 

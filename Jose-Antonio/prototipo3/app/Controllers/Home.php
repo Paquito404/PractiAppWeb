@@ -73,7 +73,7 @@ class Home extends BaseController
             session()->set([
                 'usuario_id' => $moderador['ID'],
                 'nombre' => $moderador['nombre'],
-                'tipo' => 'coordinador',
+                'tipo' => 'moderador',
                 'logged_in' => true
             ], $moderador['ID']);
             return redirect()->to('/moderador');
@@ -156,7 +156,7 @@ class Home extends BaseController
     $escuelaModel = new EscuelaModel();
     $practica = $escuelaModel->findAll();
 
-    $allowedPages = ['inicio', 'formulario', 'default', 'lista', 'editar', 'buscar', 'registro', 'revisar', 'papelera'];
+    $allowedPages = ['inicio', 'formulario', 'default', 'lista', 'editar', 'buscar', 'registroM', 'revisar', 'papelera', 'registroC'];
 
     if (!in_array($pagina, $allowedPages)) {
         return $this->response->setStatusCode(404)->setBody('Página no encontrada');
@@ -388,15 +388,43 @@ class Home extends BaseController
 
 //////////////////////////////////////////////////////////////////////
 
-    //--------------------- CRUD Coordinadores ------------------//
+    //--------------------- Registros ------------------//
 
-    public function guardarC(){
+    public function guardarM(){
 
-        $CoordinadorModel = new CoordinadorModel();
+        $maestroModel = new MaestroModel();
         $post = $this->request->getPost(['nombre', 'departamento', 'correo', 'password']);
         
 
-        $registro = $CoordinadorModel->insert([
+        $registro = $maestroModel->insert([
+            'nombre' => $post['nombre'],
+            'departamento' => $post['departamento'],
+            'correo' => $post['correo'],
+            'password' => $post['password']
+        ], true);
+        
+        $imagen = $this->request->getFile('imagen');
+        if ($imagen && $imagen->isValid()) {
+            $imagen->move(ROOTPATH . 'public/maestros', $registro . '-' . $post['correo'] .'.jpg', true);
+        }
+
+        $tipo = session()->get('tipo');
+
+        if($tipo == 'moderador'){
+            return redirect()->to('/moderador');
+
+        }else{
+            return redirect()->to('/coordinador');
+        }
+
+    }
+
+    public function guardarC(){
+
+        $coordinadorModel = new CoordinadorModel();
+        $post = $this->request->getPost(['nombre', 'departamento', 'correo', 'password']); 
+
+        $registro = $coordinadorModel->insert([
             'nombre' => $post['nombre'],
             'departamento' => $post['departamento'],
             'correo' => $post['correo'],
@@ -408,14 +436,17 @@ class Home extends BaseController
             $imagen->move(ROOTPATH . 'public/coordinadores', $registro . '-' . $post['correo'] .'.jpg', true);
         }
 
-        return redirect()->to('/coordinador');
+        return redirect()->to('/moderador');
 
     }
 
+    //------------------------------------------------------//
+
+    //--------------------- Obtencion ------------------//
     public function ObtenerC($id){
 
-        $CoordinadorModel = new CoordinadorModel();
-        $coordinador = $CoordinadorModel->find($id);
+        $coordinadorModel = new CoordinadorModel();
+        $coordinador = $coordinadorModel->find($id);
 
         if (!$coordinador) {
             return $this->response->setJSON(['error' => 'Coordinador no encontrado'])->setStatusCode(404);
@@ -425,36 +456,10 @@ class Home extends BaseController
 
     }
 
-    //------------------------------------------------------//
-
-    //--------------------- CRUD moderadores ------------------//
-
-    public function guardarMo(){
-
-        $ModeradorModel = new ModeradorModel();
-        $post = $this->request->getPost(['nombre', 'departamento', 'correo', 'password']);
-        
-
-        $registro = $ModeradorModel->insert([
-            'nombre' => $post['nombre'],
-            'departamento' => $post['departamento'],
-            'correo' => $post['correo'],
-            'password' => $post['password']
-        ], true);
-        
-        $imagen = $this->request->getFile('imagen');
-        if ($imagen && $imagen->isValid()) {
-            $imagen->move(ROOTPATH . 'public/moderadores', $registro . '-' . $post['correo'] .'.jpg', true);
-        }
-
-        return redirect()->to('/moderador');
-
-    }
-
     public function ObtenerMo($id){
 
-        $ModeradorModel = new ModeradorModel();
-        $moderador = $ModeradorModel->find($id);
+        $moderadorModel = new ModeradorModel();
+        $moderador = $moderadorModel->find($id);
 
         if (!$moderador) {
             return $this->response->setJSON(['error' => 'Coordinador no encontrado'])->setStatusCode(404);
