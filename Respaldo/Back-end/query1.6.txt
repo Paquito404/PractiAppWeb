@@ -82,4 +82,10 @@ INSERT INTO Carreras VALUES ('Copyright','Licenciatura');
 INSERT INTO Carreras VALUES ('Derecho','Licenciatura');
 INSERT INTO Carreras VALUES ('Lenguas','Arte');
 INSERT INTO Carreras VALUES ('Lectura','Arte');
+
+INSERT INTO alumnos VALUES ('David', 'Programación', '100@gmail.com', 12, '100', 1, NULL);
+INSERT INTO maestros VALUES ('Gonzales', 'Ingenieria', '111@gmail.com', 'abcd');
+INSERT INTO coordinadores VALUES ('Tony', 'Medicina', 'Z@gmail.com', 'zzzz');
+INSERT INTO moderadores VALUES ('Ochoa', 'Licenciatura', 'abcd@gmail.com', '1111');
+
 INSERT INTO Carreras VALUES ('Actuación','Arte');
