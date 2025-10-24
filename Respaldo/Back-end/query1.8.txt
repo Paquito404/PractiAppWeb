@@ -60,6 +60,7 @@ CREATE TABLE empresas (
 	nombre VARCHAR(50),
 	correo VARCHAR(50),
 	RFC VARCHAR(50),
+	departamento VARCHAR(50),
 	password VARCHAR(50),
 	Fase INT,
 	imagen VARCHAR(50),
@@ -103,4 +104,5 @@ INSERT INTO alumnos VALUES ('Roberto', 'Programación', '300@gmail.com', 3, '300
 
 INSERT INTO maestros VALUES ('Gonzales', 'Ingenieria', '111@gmail.com', 'abcd');
 INSERT INTO coordinadores VALUES ('Tony', 'Medicina', 'Z@gmail.com', 'zzzz');
+
 INSERT INTO moderadores VALUES ('Ochoa', 'Licenciatura', 'abcd@gmail.com', '1111');
